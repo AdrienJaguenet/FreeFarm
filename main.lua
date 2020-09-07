@@ -1,6 +1,6 @@
 settings = {
-	MAP_HEIGHT = 10,
-	MAP_WIDTH = 10
+	MAP_HEIGHT = 15,
+	MAP_WIDTH = 20
 }
 
 inventory = {
@@ -41,6 +41,7 @@ function Tile:new(t)
 end
 
 function love.load()
+	love.window.setMode(640, 480)
 	terrain = {}
 	for i=1,settings.MAP_WIDTH do
 		terrain[i] = {}
@@ -109,9 +110,11 @@ function love.update(dt)
 end
 
 function drawTile(t, i, j)
-	love.graphics.draw(gfx.tiles[t.terrain], i * settings.TILE_WIDTH, j * settings.TILE_HEIGHT)
+	local screenx = (i-1) * settings.TILE_WIDTH
+	local screeny = (j-1) * settings.TILE_HEIGHT
+	love.graphics.draw(gfx.tiles[t.terrain], screenx, screeny)
 	if t.seed then
-		love.graphics.draw(gfx.plants[t.seed][t.growth], i * settings.TILE_WIDTH, j * settings.TILE_HEIGHT)
+		love.graphics.draw(gfx.plants[t.seed][t.growth], screenx, screeny)
 	end
 end
 
@@ -135,9 +138,9 @@ end
 function love.mousepressed(x, y, k)
 	if k == 1 then
 		-- get tile where the click has happened
-		local tx = math.floor(x / settings.TILE_WIDTH)
-		local ty = math.floor(y / settings.TILE_HEIGHT)
-		if tx > 0 and tx < settings.MAP_WIDTH and ty > 0 and ty < settings.MAP_HEIGHT then
+		local tx = math.ceil(x / settings.TILE_WIDTH)
+		local ty = math.ceil(y / settings.TILE_HEIGHT)
+		if tx > 0 and tx <= settings.MAP_WIDTH and ty > 0 and ty <= settings.MAP_HEIGHT then
 			current_tool.action(tx, ty)
 		end
 	end
